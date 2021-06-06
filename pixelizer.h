@@ -1,17 +1,16 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "rlights.h"
+#include "scene.h"
 
 struct Pixelizer
 {
-    Model *model;
-    ModelAnimation *animations;
-    int animationCount;
-    int selectedAnimation;
+    float pixelIntensity;
+    Shader *pixelizerShader;
+    RenderTexture2D *target;
 };
 
-Pixelizer *InitPixelizer();
-void SetupModel(char *file);
+Pixelizer *InitPixelizer(Scene *scene);
 void UpdatePixelizer();
-void DrawPixelizer(RenderTexture2D target, Camera camera);
-void DrawPixelizerGui(int screenWidth, int screenHeight);
+void DrawPixelizer(Pixelizer *pixelizer, Scene *scene);
+void DrawPixelizerGui(Pixelizer *pixelizer, Scene *scene);
