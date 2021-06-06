@@ -2,6 +2,16 @@
 #include "raymath.h"
 #include "rlights.h"
 
-void InitPixelizer(Model *targetModel);
+struct Pixelizer
+{
+    Model *model;
+    ModelAnimation *animations;
+    int animationCount;
+    int selectedAnimation;
+};
+
+Pixelizer *InitPixelizer();
+void SetupModel(char *file);
 void UpdatePixelizer();
-void DrawPixelizer(RenderTexture2D target, Camera camera, float pixelPercent);
+void DrawPixelizer(RenderTexture2D target, Camera camera);
+void DrawPixelizerGui(int screenWidth, int screenHeight);

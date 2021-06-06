@@ -10,15 +10,12 @@
 #include <iostream>
 using namespace std;
 
-Model *currentModel = NULL;
-
 float rotation = 0.0f;
 
 const int screenWidth = 800;
 const int screenHeight = 450;
 
-float pixelPercent = 0.5f;
-
+bool IsModel(char *charArr);
 void DrawGui(float screenWidth, float screenHeight);
 void DrawScene(RenderTexture2D target);
 
@@ -27,13 +24,9 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "Ray Window");
 
-    currentModel = (Model *)malloc(sizeof(Model));
-    *currentModel = LoadModel("/home/parker/Downloads/castle.obj");
-    currentModel->materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTexture("/home/parker/Downloads/castle.png");
-
     Camera camera = {0};
-    camera.position = (Vector3){40.0f, 20.0f, 20.0f};
-    camera.target = (Vector3){0.0f, 8.0f, 0.0f};
+    camera.position = (Vector3){0.0f, 0.0f, 0.0f};
+    camera.target = (Vector3){0.0f, 0.0f, 0.0f};
     camera.up = (Vector3){0.0f, 1.6f, 0.0f};
     camera.fovy = 45.0f;
     camera.projection = CAMERA_PERSPECTIVE;
@@ -48,34 +41,40 @@ int main(void)
 
     RenderTexture2D target = LoadRenderTexture(screenWidth, screenHeight);
 
-    InitPixelizer(currentModel);
+    Pixelizer *pixelizer = InitPixelizer();
 
     while (!WindowShouldClose())
     {
         UpdateCamera(&camera);
 
-        // if(IsFileDropped()) {
-        //     cout << "File dropped!" << endl;
-        //     int count = 0;
-        //     char** files = GetDroppedFiles(&count);
-        //     cout << "File Count: " << count << endl;
+        if (IsFileDropped())
+        {
+            cout << "File dropped!" << endl;
+            int count = 0;
+            char **files = GetDroppedFiles(&count);
+            cout << "File Count: " << count << endl;
 
-        //     if (count == 1) {
-        //         cout << files[0] << endl;
-        //         currentModel = LoadModel(files[0]);
-        //         hasModel = true;
-        //     }
+            if (count == 1)
+            {
+                if (IsModel(files[0]))
+                {
 
-        //     ClearDroppedFiles();
-        // }
+                    cout << files[0] << endl;
+
+                    SetupModel(files[0]);
+                }
+            }
+
+            ClearDroppedFiles();
+        }
 
         UpdatePixelizer();
 
         BeginDrawing();
 
-        if (currentModel != NULL)
+        if (pixelizer->model != NULL)
         {
-            DrawPixelizer(target, camera, pixelPercent);
+            DrawPixelizer(target, camera);
         }
         else
         {
@@ -83,25 +82,38 @@ int main(void)
             DrawText(helperText, (screenWidth / 2) - (helperTextWidth / 2), screenHeight / 2, helperTextSize, LIGHTGRAY);
         }
 
-        DrawGui(screenWidth, screenHeight);
+        DrawPixelizerGui(screenWidth, screenHeight);
 
         EndDrawing();
 
-        rotation += 0.01f;
-        currentModel->transform = MatrixRotateXYZ((Vector3){0.0f, rotation, 0.0f});
+        // rotation += 0.01f;
+        // currentModel->transform = MatrixRotateXYZ((Vector3){0.0f, rotation, 0.0f});
     }
 
     CloseWindow();
 }
 
-void DrawGui(float screenWidth, float screenHeight)
+bool IsModel(char *charArr)
 {
-    float width = 120;
-    float height = 20;
-    float xPadding = 40;
-    float yPadding = 10;
-    float x = screenWidth - width - xPadding;
-    float y = screenHeight - height - yPadding;
-    pixelPercent = GuiSlider((Rectangle){x, y, width, height}, "0", "100", pixelPercent, 0, 1);
-    // GuiWindowBox((Rectangle){0, 0, screenWidth, screenHeight}, "Pixler");
+    std::string str = std::string(charArr);
+    if (str.length() >= 3)
+    {
+        std::string extension = str.substr(str.length() - 3, 3);
+        cout << extension << endl;
+        if (extension == "obj" || extension == "ltf")
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void ResetCamera(Camera camera)
+{
+    camera.position = (Vector3){0.0f, 0.0f, 0.0f};
+    camera.target = (Vector3){0.0f, 0.0f, 0.0f};
+    camera.up = (Vector3){0.0f, 1.6f, 0.0f};
+    camera.fovy = 45.0f;
+    camera.projection = CAMERA_PERSPECTIVE;
 }
