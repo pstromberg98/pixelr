@@ -2,6 +2,7 @@
 #define SCENE_H
 
 #include "raylib.h"
+#include "rlights.h"
 #include <stdlib.h>
 
 struct Scene
@@ -17,6 +18,9 @@ struct Scene
     int animationFrame;
 
     Shader *lightingShader;
+
+    Light lights[MAX_LIGHTS];
+    bool enableLighting;
 };
 
 Scene *InitScene();

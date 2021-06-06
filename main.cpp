@@ -49,7 +49,7 @@ int main(void)
         }
 
         UpdateScene(scene);
-        UpdatePixelizer();
+        UpdatePixelizer(pixelizer, scene);
 
         BeginDrawing();
 

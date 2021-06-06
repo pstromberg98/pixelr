@@ -1,6 +1,5 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "rlights.h"
 #include "scene.h"
 
 struct Pixelizer
@@ -11,6 +10,6 @@ struct Pixelizer
 };
 
 Pixelizer *InitPixelizer(Scene *scene);
-void UpdatePixelizer();
+void UpdatePixelizer(Pixelizer *pixelizer, Scene *scene);
 void DrawPixelizer(Pixelizer *pixelizer, Scene *scene);
 void DrawPixelizerGui(Pixelizer *pixelizer, Scene *scene);

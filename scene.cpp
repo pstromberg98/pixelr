@@ -1,6 +1,7 @@
 #include "raygui.h"
 #include "raylib.h"
 #include "scene.h"
+#include "raymath.h"
 #include <cstring>
 #include <stdlib.h>
 #include <iostream>
@@ -20,10 +21,12 @@ Scene *InitScene()
     Scene *scene = (Scene *)malloc(sizeof(Scene));
     *scene = {
         camera : camera,
-        screenWidth : 800,
+        screenWidth : 900,
         screenHeight : 600,
         animationIndex : -1,
         animationCount : 0,
+        lights : {0},
+        enableLighting : false
     };
 
     InitWindow(scene->screenWidth, scene->screenHeight, "Pixelr");
@@ -47,10 +50,12 @@ Scene *InitScene()
     const float a[4] = {0.2f, 0.2f, 0.2f, 1.0f};
     SetShaderValue(*lightingShader, ambientLoc, a, SHADER_UNIFORM_VEC4);
 
-    // lights[0] = CreateLight(LIGHT_POINT, (Vector3){10, 2, 10}, Vector3Zero(), WHITE, lightingShader);
-    // lights[1] = CreateLight(LIGHT_POINT, (Vector3){10, 2, 10}, Vector3Zero(), RED, lightingShader);
-    // lights[2] = CreateLight(LIGHT_POINT, (Vector3){0, 7, 10}, Vector3Zero(), GREEN, lightingShader);
-    // lights[3] = CreateLight(LIGHT_POINT, (Vector3){0, 7, 10}, Vector3Zero(), BLUE, lightingShader);
+    Light *lights = scene->lights;
+
+    lights[0] = CreateLight(LIGHT_POINT, (Vector3){10, 2, 10}, Vector3Zero(), WHITE, *(scene->lightingShader));
+    lights[1] = CreateLight(LIGHT_POINT, (Vector3){10, 2, 10}, Vector3Zero(), RED, *(scene->lightingShader));
+    lights[2] = CreateLight(LIGHT_POINT, (Vector3){0, 7, 10}, Vector3Zero(), GREEN, *(scene->lightingShader));
+    lights[3] = CreateLight(LIGHT_POINT, (Vector3){0, 7, 10}, Vector3Zero(), BLUE, *(scene->lightingShader));
 
     return scene;
 }
@@ -78,7 +83,6 @@ void LoadModelFile(Scene *scene, char *file)
     scene->animations = animations;
     scene->animationCount = animsCount;
     scene->animationIndex = -1;
-    std::cout << "Model Loaded" << std::endl;
 }
 
 void UpdateScene(Scene *scene)
@@ -126,6 +130,23 @@ void DrawSceneGui(Scene *scene)
 
         currentY += wh + 5;
     }
+
+    bool enableLighting = GuiCheckBox((Rectangle){0, currentY, wh, wh}, "Enable Lighting", scene->enableLighting);
+
+    if (enableLighting != scene->enableLighting)
+    {
+        scene->enableLighting = enableLighting;
+        if (enableLighting)
+        {
+            scene->model->materials[0].shader = *(scene->lightingShader);
+        }
+        else
+        {
+            scene->model->materials[0].shader = LoadMaterialDefault().shader;
+        }
+    }
+
+    currentY += wh + 5;
 
     bool clearAnim = GuiLabelButton((Rectangle){0, currentY, wh, wh}, "Clear Animation");
 
