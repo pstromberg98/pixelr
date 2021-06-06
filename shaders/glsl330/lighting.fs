@@ -66,6 +66,15 @@ void main()
             }
             
             float NdotL = max(dot(normal, light), 0.0);
+
+            if (NdotL > 0.9) {
+                NdotL = 1.0;
+            } else if (NdotL > 0.25) {
+                NdotL = 0.5;
+            } else {
+                NdotL =0.0;
+            }
+
             lightDot += lights[i].color.rgb*NdotL;
 
             float specCo = 0.0;

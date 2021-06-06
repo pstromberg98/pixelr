@@ -48,6 +48,18 @@ int main(void)
             ClearDroppedFiles();
         }
 
+        if (IsKeyDown(KEY_D) && scene->model != NULL)
+        {
+            rotation += 0.01f;
+            scene->model->transform = MatrixRotateXYZ((Vector3){0.0f, 0.0f, rotation});
+        }
+
+        if (IsKeyDown(KEY_A) && scene->model != NULL)
+        {
+            rotation -= 0.01f;
+            scene->model->transform = MatrixRotateXYZ((Vector3){0.0f, 0.0f, rotation});
+        }
+
         UpdateScene(scene);
         UpdatePixelizer(pixelizer, scene);
 

@@ -52,10 +52,18 @@ Scene *InitScene()
 
     Light *lights = scene->lights;
 
-    lights[0] = CreateLight(LIGHT_POINT, (Vector3){10, 2, 10}, Vector3Zero(), WHITE, *(scene->lightingShader));
+    lights[0] = CreateLight(LIGHT_DIRECTIONAL, (Vector3){25, 0, 25}, Vector3Zero(), RED, *(scene->lightingShader));
     lights[1] = CreateLight(LIGHT_POINT, (Vector3){10, 2, 10}, Vector3Zero(), RED, *(scene->lightingShader));
     lights[2] = CreateLight(LIGHT_POINT, (Vector3){0, 7, 10}, Vector3Zero(), GREEN, *(scene->lightingShader));
     lights[3] = CreateLight(LIGHT_POINT, (Vector3){0, 7, 10}, Vector3Zero(), BLUE, *(scene->lightingShader));
+
+    lights[1].enabled = false;
+    lights[2].enabled = false;
+    lights[3].enabled = false;
+
+    UpdateLightValues(*(scene->lightingShader), lights[1]);
+    UpdateLightValues(*(scene->lightingShader), lights[2]);
+    UpdateLightValues(*(scene->lightingShader), lights[3]);
 
     return scene;
 }

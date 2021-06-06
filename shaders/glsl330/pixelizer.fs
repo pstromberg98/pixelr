@@ -11,9 +11,6 @@ uniform vec4 colDiffuse;
 // Output fragment color
 out vec4 finalColor;
 
-// NOTE: Add here your custom variables
-
-// NOTE: Render size values must be passed from code
 uniform int renderWidth;
 uniform int renderHeight;
 

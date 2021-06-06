@@ -127,6 +127,16 @@ RenderTexture2D GenerateTexture(Pixelizer *pixelizer, Scene *scene)
         }
     }
 
+    for (int i = 0; i < MAX_LIGHTS; i++)
+    {
+        Light light = scene->lights[i];
+        if (light.enabled)
+        {
+            DrawSphere(light.position, 5.0f, light.color);
+            // DrawPoint3D(light.position, light.color);
+        }
+    }
+
     // DrawBoundingBox((BoundingBox){largestMin, largestMax}, RED);
 
     EndMode3D();
